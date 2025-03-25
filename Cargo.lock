@@ -3,6 +3,15 @@
 version = 4
 
 [[package]]
+name = "isrc"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "143e773b94e1c2c18a5f6325f9b1312bd2646d5d56a4ab60084878611025ae9b"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
 name = "lazycsv"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -31,6 +40,7 @@ dependencies = [
 name = "nostd"
 version = "0.1.0"
 dependencies = [
+ "isrc",
  "lazycsv",
  "no_std_io",
  "syscalls",

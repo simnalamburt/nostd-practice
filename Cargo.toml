@@ -13,6 +13,7 @@ strip = "symbols"
 lto = "fat"
 
 [dependencies]
+isrc = { version = "0.1.1", default-features = false }
 lazycsv = { version = "0.1.0", default-features = false }
 no_std_io = { version = "0.6.0", features = ["nightly"] }
 syscalls = { version = "0.6.18", default-features = false }
