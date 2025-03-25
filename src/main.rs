@@ -1,6 +1,10 @@
 #![no_std]
 #![no_main]
 
+use core::str::from_utf8_unchecked;
+use no_std_io::io::{Cursor, Write};
+
+use lazycsv::Csv;
 use syscalls::{Sysno, syscall};
 
 #[panic_handler]
@@ -16,7 +20,30 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 
 #[unsafe(no_mangle)]
 unsafe fn _start() -> ! {
-    syscall!(Sysno::write, 1, "Hello, World!\n".as_ptr(), 14).unwrap();
+    let mut buffer = [0u8; 1024];
+
+    let csv = Csv::new(b"a,b,c\n1,2,3\n100,200,300\n");
+    for row in csv.into_rows() {
+        let [r0, r1, r2] = row.unwrap();
+
+        let mut writer = Cursor::new(&mut buffer[..]);
+        writeln!(
+            writer,
+            "{}\t{}\t{}",
+            unsafe { from_utf8_unchecked(r0.buf) },
+            unsafe { from_utf8_unchecked(r1.buf) },
+            unsafe { from_utf8_unchecked(r2.buf) }
+        )
+        .unwrap();
+        syscall!(
+            Sysno::write,
+            1,
+            writer.get_ref().as_ptr(),
+            writer.position()
+        )
+        .unwrap();
+    }
+
     syscall!(Sysno::exit, 0).unwrap();
     unreachable!();
 }
